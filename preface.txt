@@ -1,0 +1,5 @@
+It is imperative that you utilize the source.The open availability of the source code
+for the Linux system is a rare gift that you must not take for granted. It is not sufficient
+only to read the source, however.You need to dig in and change some code. 
+Find a bug and fix it. Improve the drivers for your hardware. Add some new functionality, even if it
+is trivial. Find an itch and scratch it! Only when you write code will it all come together.
