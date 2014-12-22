@@ -1,0 +1,14 @@
+The kernel stores the list of processes in a circular doubly linked list called the task list. 2
+Each element in the task list is a process descriptor of the type struct task_struct , which
+is defined in <linux/sched.h> .The process descriptor contains all the information about
+a specific process.
+
+This maximum value is important because it is essentially the maximum number of
+processes that may exist concurrently on the system.Although 32,768 might be sufficient
+for a desktop system, large servers may require many more processes. Moreover, the lower
+the value, the sooner the values will wrap around, destroying the useful notion that higher
+values indicate later-run processes than lower values. If the system is willing to break com-
+patibility with old applications, the administrator may increase the maximum value via
+/proc/sys/kernel/pid_max
+
+
