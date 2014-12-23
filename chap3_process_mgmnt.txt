@@ -1,0 +1,53 @@
+The kernel stores the list of processes in a circular doubly linked list called the task list. 2
+Each element in the task list is a process descriptor of the type struct task_struct , which
+is defined in <linux/sched.h> .The process descriptor contains all the information about
+a specific process.
+
+This maximum value is important because it is essentially the maximum number of
+processes that may exist concurrently on the system.Although 32,768 might be sufficient
+for a desktop system, large servers may require many more processes. Moreover, the lower
+the value, the sooner the values will wrap around, destroying the useful notion that higher
+values indicate later-run processes than lower values. If the system is willing to break com-
+patibility with old applications, the administrator may increase the maximum value via
+/proc/sys/kernel/pid_max
+
+The Process Family Tree
+=============================
+All processes are descendants of the init process, whose PID is one.The kernel starts
+init in the last step of the boot process.The init process, in turn, reads the system
+initscripts and executes more programs, eventually completing the boot process.
+
+it is desirable simply to iterate over all processes in the system.
+This is easy because the task list is a circular, doubly linked list.
+
+Process Creation
+================================
+Unix takes the unusual approach of separating these steps into two distinct
+functions: fork() and exec() . 7 The first, fork() , creates a child process that is a copy of
+the current task. It differs from the parent only in its PID (which is unique), its PPID
+(parent’s PID, which is set to the original process), and certain resources and statistics, such
+as pending signals, which are not inherited.The second function, exec() , loads a new
+executable into the address space and begins executing it.The combination of
+fork() followed by exec() is similar to the single function most operating systems
+provide.
+
+Copy-on-Write
+============================
+Traditionally, upon fork(), all resources owned by the parent are duplicated and the
+copy is given to the child.This approach is naive and inefficient in that it copies much
+data that might otherwise be shared.Worse still, if the new process were to immediately
+execute a new image, all that copying would go to waste. In Linux, fork() is imple-
+mented through the use of copy-on-write pages. Copy-on-write (or COW) is a technique
+to delay or altogether prevent copying of the data. Rather than duplicate the process
+address space, the parent and the child can share a single copy.
+
+The only overhead incurred by fork() is the duplication of the parent’s page tables
+and the creation of a unique process descriptor for the child. In the common case that a
+process executes a new executable image immediately after forking, this optimization pre-
+vents the wasted copying of large amounts of data (with the address space, easily tens of
+megabytes).
+
+Forking
+===============================
+With the process successfully reparented, there is no risk of stray zombie processes.The
+init process routinely calls wait() on its children, cleaning up any zombies assigned to it.
