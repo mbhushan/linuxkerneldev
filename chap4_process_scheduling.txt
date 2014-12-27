@@ -1,0 +1,22 @@
+PROCESS PRIORITY
+===================================
+the Linux operating system is preemptive.
+You can see a list of the processes on your system and their respective nice values (under the column marked NI) with the command ps -el
+
+The Linux kernel implements two separate priority ranges.The first is the nice value, a
+number from –20 to +19 with a default of 0. Larger nice values correspond to a lower
+priority—you are being “nice” to the other processes on the system. Processes with a
+lower nice value (higher priority) receive a larger proportion of the system’s processor
+compared to processes with a higher nice value (lower priority).
+
+The second range is the real-time priority.The values are configurable, but by default
+range from 0 to 99, inclusive.
+
+You can see a list of the processes on your system and their respective real-time priority (under the column marked RTPRIO) 
+with the command
+ps -eo state,uid,pid,ppid,rtprio,time,comm .
+A value of “-” means the process is not real-time.
+
+The Linux Scheduling Algorithm
+=====================================
+
